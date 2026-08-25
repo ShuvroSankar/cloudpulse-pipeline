@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cloudpulse-pipeline"
+version = "0.1.0"
+description = "Real-Time FinOps & Infrastructure Observability Engine"
+readme = "README.md"
+requires-python = ">3.10"
+
+dependencies = [
+	# Core Async & CLI TUI
+	"textual>=0.50.0",
+	"rich>=13.7.0",
+
+	# Streaming & Local Warehousing
+	"duckdb>=0.10.0",
+	"kafka_python-ng>=2.2.0",
+	"pandas>=2.2.0",
+	"pydantic>=2.6.0",
+
+	# Cloud Warehousing
+	"google-cloud-bigquery>=3.18.0",
+	"dbt-bigquery>=1.7.0",
+]
+[project.optional-dependencies]
+dev = [
+	"pytest>=8.0.0",
+	"black>=24.0.0",
+	"ruff>=0.2.0",
+]
+

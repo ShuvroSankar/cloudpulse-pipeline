@@ -1,0 +1,13 @@
+textual>=0.50.0
+rich>=13.7.0
+duckdb>=0.10.0
+kafka_python-ng>=2.2.0
+pandas>=2.2.0
+pydantic>=2.6.0
+google-cloud-bigquery>=3.18.0
+dbt-bigquery>=1.7.0
+
+[dev]
+pytest>=8.0.0
+black>=24.0.0
+ruff>=0.2.0
