@@ -3,6 +3,7 @@ from pathlib import Path
 import pandas as pd
 
 pd.set_option("display.max_columns", None)
+pd.set_option('display.width', 1000)
 
 
 class CloudPulseAnalytics:
@@ -29,6 +30,14 @@ class CloudPulseAnalytics:
             sql = f.read()
         return self.conn.execute(sql).df()
 
+    def execute_export_from_file(self, query_filename: str = "export_parquet.sql"):
+        """Executes a COPY statement stored in sql/queries to export data."""
+        query_path = self.sql_dir / "queries" / query_filename
+        with open(query_path, "r") as f:
+            sql = f.read()
+        self.conn.execute(sql)
+        print(f"[Parquet Export] Successfully executed export query from '{query_path}'")
+
 if __name__ == "__main__":
     analytics = CloudPulseAnalytics()
 
@@ -37,3 +46,7 @@ if __name__ == "__main__":
 
     print("\n [Cost Anomalies]:")
     print(analytics.run_query_from_file("cost_anomalies.sql"))
+
+    print("\n [Exporting Parquet Data]:")
+    analytics.execute_export_from_file("export_parquet.sql")
+
