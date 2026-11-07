@@ -38,7 +38,7 @@ By consuming synthetic asynchronous log streams, applying statistical anomaly de
 
 ## Architecture
 
-![Architecture](docs/images/architecture-blueprint.png)
+![Architecture](docs/images/page2-architecture-blueprint)
 
 ```
 log_producer (async) -> asyncio.Queue -> stream_consumer -> DuckDB raw_logs
