@@ -1,18 +1,18 @@
-# Environments & OS
-.venv/
-venv/
-.DS_Store
-
-# Databases & Data Exports
-*.db
-*.sqlite
-data/exports/
-
-# GCP & Credentials
-*.json
-.env
-
-# Python Cache
 __pycache__/
 *.pyc
+*.egg-info/
+.DS_Store
 *.swp
+.venv/
+.pytest_cache/
+.ruff_cache/
+
+# generated data and warehouses
+cloudpulse.db
+cloudpulse.db.wal
+data/exports/
+
+# dbt
+dbt_transforms/target/
+dbt_transforms/logs/
+dbt_transforms/dbt_packages/

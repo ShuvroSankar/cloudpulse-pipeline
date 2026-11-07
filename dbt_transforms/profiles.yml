@@ -1,0 +1,18 @@
+# Local dev runs on DuckDB (the same cloudpulse.db the pipeline writes to).
+# Prod runs on BigQuery using your gcloud login. No secrets live in this file.
+#   dbt build --profiles-dir . --target dev
+#   dbt build --profiles-dir . --target prod
+cloudpulse:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: "{{ env_var('CLOUDPULSE_DB_PATH', '../cloudpulse.db') }}"
+      threads: 4
+    prod:
+      type: bigquery
+      method: oauth
+      project: "{{ env_var('GCP_PROJECT', 'cloudpulse-finops-4321') }}"
+      dataset: cloudpulse_finops
+      location: US
+      threads: 4

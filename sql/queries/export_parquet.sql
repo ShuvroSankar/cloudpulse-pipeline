@@ -1,6 +1,6 @@
 -- Export enriched observability logs to a single Parquet file
 COPY (
-    SELECT * FROM log_observability_enriched
+    SELECT * FROM raw_logs
 ) TO 'data/exports/raw_logs/logs.parquet'
 (
     FORMAT PARQUET

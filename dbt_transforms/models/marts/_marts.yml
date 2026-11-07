@@ -1,0 +1,39 @@
+version: 2
+
+models:
+  - name: stg_raw_logs
+    description: Typed, minimal view over raw_logs.
+
+  - name: log_observability_enriched
+    description: One row per log event with wasted spend, unit economics, p95 tail and cost anomaly flags.
+    columns:
+      - name: timestamp
+        tests: [not_null]
+      - name: service_name
+        tests: [not_null]
+      - name: service_health_status
+        tests:
+          - not_null
+          - accepted_values:
+              values: ["HEALTHY", "WARNING", "CRITICAL"]
+      - name: is_server_error
+        tests: [not_null]
+      - name: wasted_cost_usd
+        tests: [not_null]
+
+  - name: service_health_summary
+    description: Per-service roll-up for the executive dashboard.
+    columns:
+      - name: service_name
+        tests: [unique, not_null]
+      - name: total_requests
+        tests: [not_null]
+
+  - name: cost_anomalies
+    description: Rows with cost z-score >= 2.
+    columns:
+      - name: severity
+        tests:
+          - not_null
+          - accepted_values:
+              values: ["WARNING", "CRITICAL"]

@@ -1,9 +1,10 @@
 import asyncio
-import json
 import random
 from datetime import datetime, timezone
-from typing import Dict, Any
+from typing import Any
+
 from pydantic import BaseModel, Field
+
 
 class LogEvent(BaseModel):
 	"""Pydantic model defining the strict schema for generated log events"""
@@ -16,7 +17,7 @@ class LogEvent(BaseModel):
 	memory_utilization: float
 	estimated_cost_usd: float
 
-SERVICES = ["payment-gateway", "auth-service", "inventory-api", "recomendation-engine"]
+SERVICES = ["payment-gateway", "auth-service", "inventory-api", "recommendation-engine"]
 HTTP_STATUSES = [200, 200, 200, 200, 201, 400, 404, 500, 503]
 LOG_LEVEL_MAP = {
 	200: "INFO",
@@ -27,7 +28,7 @@ LOG_LEVEL_MAP = {
 	503: "CRITICAL"
 }
 
-def inject_anomalies(service: str) -> Dict[str, Any]:
+def inject_anomalies(service: str) -> dict[str, Any]:
 	"""Simulates real-world traffic patterns, including sudden latency spikes and errors."""
 # 5% chance to trigger a massive latency/error anomaly
 	is_anomaly = random.random() <0.05
@@ -53,7 +54,7 @@ def inject_anomalies(service: str) -> Dict[str, Any]:
 		"memory_utilization": mem,
 		"estimated_cost_usd": cost,
 	}
-async def stream_logs(target_queue: asyncio.Queue = None, delay_seconds: float = 0.1):
+async def stream_logs(target_queue: asyncio.Queue | None = None, delay_seconds: float = 0.1):
 # Async generator that continiously yields o pushes LogEvent payloads.
 # - target_queue: Optional asyncio.Queue for internal memory streaming to local consumers.
 # - delay_seconds: Controls throughput (e.g., 0.1s = 10 events/sec, 0.01s = 100 events/sec).

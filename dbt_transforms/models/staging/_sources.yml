@@ -1,0 +1,19 @@
+version: 2
+
+sources:
+  - name: cloudpulse
+    description: Raw log events written by the seeder / stream consumer (DuckDB) or loaded from Parquet (BigQuery).
+    schema: "{{ 'main' if target.type == 'duckdb' else 'cloudpulse_finops' }}"
+    tables:
+      - name: raw_logs
+        columns:
+          - name: timestamp
+            tests: [not_null]
+          - name: service_name
+            tests: [not_null]
+          - name: http_status
+            tests: [not_null]
+          - name: response_ms
+            tests: [not_null]
+          - name: estimated_cost_usd
+            tests: [not_null]

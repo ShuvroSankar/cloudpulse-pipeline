@@ -1,10 +1,12 @@
-#!/usr/bin/env python3
 
 import asyncio
 import json
+from typing import Any
+
 import duckdb
-from typing import List, Dict, Any
+
 from src.generator.log_producer import stream_logs
+
 
 class DuckDBIngestionEngine:
     """Buffers streaming log records into memory and flushes them into a DuckDB analytical database."""
@@ -33,7 +35,7 @@ class DuckDBIngestionEngine:
         Continiously read from the queue, accumulates records, 
         and triggers a batch write when threshhold is reached.
         """
-        buffer: List[Dict[str, Any]] = []
+        buffer: list[dict[str, Any]] = []
         print(f"[Ingestion Engine] Activate queue consumer started (Batch Size Threshold: {self.batch_size})...")
         try:
             while True:
@@ -52,8 +54,8 @@ class DuckDBIngestionEngine:
             # Dain remaining items in queue on graceful shutdown
             if buffer:
                 self._flush_buffer(buffer)
-            print(f"[Ingestion Engine] Consumer stopped successfully.")
-    def _flush_buffer(self, batch: List[Dict[str, Any]]):
+            print("[Ingestion Engine] Consumer stopped successfully.")
+    def _flush_buffer(self, batch: list[dict[str, Any]]):
         """ Converts raw dicts into SQL touples 
         and writes to DuckDB using vectorized bulk inserts."""
         records = [

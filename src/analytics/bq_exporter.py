@@ -1,6 +1,8 @@
 import sys
 from pathlib import Path
+
 from google.cloud import bigquery
+
 
 class BigQueryPipelineExporter:
     """Syncs DuckDB Parquet exports into Google BigQuery."""
@@ -14,12 +16,6 @@ class BigQueryPipelineExporter:
     def sync_parquet_to_bigquery(self, parquet_dir: str = "data/exports/raw_logs"):
         table_ref = f"{self.dataset_ref}.raw_logs"
 
-        job_config = bigquery.LoadJobConfig(
-            source_format=bigquery.SourceFormat.PARQUET,
-            write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
-            autodetect=True,
-        )
-
         parquet_files = [str(p) for p in Path(parquet_dir).rglob("*.parquet")]
 
         if not parquet_files:
@@ -28,7 +24,16 @@ class BigQueryPipelineExporter:
 
         print(f"Uploading {len(parquet_files)} Parquet file(s) to BigQuery table {table_ref}...")
 
-        for file_path in parquet_files:
+        for i, file_path in enumerate(sorted(parquet_files)):
+            # Truncate once on the first file, then append, so multiple files all survive
+            job_config = bigquery.LoadJobConfig(
+                source_format=bigquery.SourceFormat.PARQUET,
+                write_disposition=(
+                    bigquery.WriteDisposition.WRITE_TRUNCATE if i == 0
+                    else bigquery.WriteDisposition.WRITE_APPEND
+                ),
+                autodetect=True,
+            )
             with open(file_path, "rb") as source_file:
                 load_job = self.client.load_table_from_file(
                     source_file, table_ref, job_config=job_config
@@ -59,5 +64,5 @@ if __name__ == "__main__":
         if exporter.sync_parquet_to_bigquery():
             exporter.create_enriched_view()
         print("BigQuery Sync Completed Successfully.")
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         print(f"Error during BigQuery sync: {e}", file=sys.stderr)

@@ -1,5 +1,7 @@
-import duckdb
+import re
 from pathlib import Path
+
+import duckdb
 import pandas as pd
 
 pd.set_option("display.max_columns", None)
@@ -35,6 +37,10 @@ class CloudPulseAnalytics:
         query_path = self.sql_dir / "queries" / query_filename
         with open(query_path, "r") as f:
             sql = f.read()
+        # COPY fails if the target directory is missing, so create it first
+        target = re.search(r"TO\s+'([^']+)'", sql)
+        if target:
+            Path(target.group(1)).parent.mkdir(parents=True, exist_ok=True)
         self.conn.execute(sql)
         print(f"[Parquet Export] Successfully executed export query from '{query_path}'")
 
