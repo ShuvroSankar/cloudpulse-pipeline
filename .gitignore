@@ -16,3 +16,4 @@ data/exports/
 dbt_transforms/target/
 dbt_transforms/logs/
 dbt_transforms/dbt_packages/
+*.zip
